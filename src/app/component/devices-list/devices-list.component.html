@@ -1,0 +1,140 @@
+<div class="container main-div">
+  <div class="row">
+    <form [formGroup]="deviceForm">
+      <div class="form-group col col-md-4">
+        <label for="hostname">Host Name:</label>
+        <input type="text" formControlName="hostname" name="hostname" class="form-control" id="hostname">
+        <span *ngIf="((deviceForm.controls.hostname.hasError('required') || deviceForm.controls.hostname.hasError('pattern')) && deviceForm.controls.hostname.touched) || ((deviceForm.controls.hostname.hasError('required') || deviceForm.controls.hostname.hasError('pattern')) && submitAttempt)">Please
+          enter valid hostname</span>
+      </div>
+      <div class="form-group col col-md-4">
+        <label for="ipadd">Loopback:</label>
+        <input type="text" formControlName="ipadd" name="ipadd" class="form-control" id="ipadd">
+        <span *ngIf="((deviceForm.controls.ipadd.hasError('required') || deviceForm.controls.ipadd.hasError('pattern')) && deviceForm.controls.ipadd.touched) || ((deviceForm.controls.ipadd.hasError('required') || deviceForm.controls.ipadd.hasError('pattern')) && submitAttempt)">Please
+          enter valid loopback</span>
+      </div>
+      <div class="col col-md-4 submit-btn">
+        <button (click)="addHost()" *ngIf="!editForm" type="submit" class="btn btn-default" id="btun">Add</button>
+        <button (click)="editHost()" *ngIf="editForm" type="submit" class="btn btn-default" id="btun">Update</button>
+      </div>
+    </form>
+  </div>
+  <div class="device-list">
+    <table class="table table-striped" [mfData]="data" #mf="mfDataTable" [mfRowsOnPage]="5">
+      <thead>
+        <tr>
+          <th style="width: 10%">
+            <mfDefaultSorter by="name">Sr. No.</mfDefaultSorter>
+          </th>
+          <th style="width: 40%">
+            <mfDefaultSorter by="email">name</mfDefaultSorter>
+          </th>
+          <th style="width: 30%">
+            <mfDefaultSorter by="age">Loopback</mfDefaultSorter>
+          </th>
+          <th style="width: 20%">
+            <mfDefaultSorter by="city">Action</mfDefaultSorter>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let device of mf.data; let i=index">
+          <td>{{i+1}}</td>
+          <td>{{device.hostname}}</td>
+          <td>{{device.ipadd}}</td>
+          <td><span class="glyphicon glyphicon-pencil" (click)="openEditForm(i)"></span>&nbsp;&nbsp;<span (click)="deleteHost(i)"
+              class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;<span class="glyphicon glyphicon-eye-open"
+              data-toggle="modal" data-target="#myModal" (click)="view(i)"></span></td>
+        </tr>
+        <!-- <tr *ngFor="let device of mf.data; let i=index">
+          <td>{{i+1}}</td>
+          <td>{{device.name}}</td>
+          <td>{{device.ip}}</td>
+          <td><span class="glyphicon glyphicon-pencil" (click)="openInterfaceEditForm(i)"></span>&nbsp;&nbsp;<span (click)="deleteInterface(i)" class="glyphicon glyphicon-trash"></span></td>
+        </tr> -->
+        <tr *ngIf="mf.data.length == 0">
+          <td colspan="3">Record not found</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="4">
+            <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25]"></mfBootstrapPaginator>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>
+
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Edit Interface</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <form [formGroup]="interfaceForm">
+            <div class="form-group col col-md-4">
+              <label for="hostname">Interface:</label>
+              <input type="text" formControlName="name" name="name" class="form-control" id="name">
+              <span *ngIf="((interfaceForm.controls.name.hasError('required') || interfaceForm.controls.name.hasError('pattern')) && interfaceForm.controls.name.touched) || ((interfaceForm.controls.name.hasError('required') || interfaceForm.controls.name.hasError('pattern')) && submitAttempt)">Please
+                enter valid interface</span>
+            </div>
+            <div class="form-group col col-md-4">
+              <label for="ip">Interface IP Address:</label>
+              <input type="text" formControlName="ip" name="ip" class="form-control" id="ip">
+              <span *ngIf="((interfaceForm.controls.ip.hasError('required') || interfaceForm.controls.ip.hasError('pattern')) && interfaceForm.controls.ip.touched) || ((interfaceForm.controls.ip.hasError('required') || interfaceForm.controls.ip.hasError('pattern')) && submitAttempt)">Please
+                enter valid Interface IP Address</span>
+            </div>
+            <div class="col col-md-4 submit-btn">
+              <button (click)="addInterface()" *ngIf="!editInterfaceForm" type="submit" class="btn btn-default" id="btun">Add</button>
+              <button (click)="editInterface()" *ngIf="editInterfaceForm" type="submit" class="btn btn-default" id="btun">Update</button>
+            </div>
+          </form>
+        </div>
+        <div class="row interface">
+          <h4>Interfaces</h4>
+        </div>
+        <div class="row">
+          <table class="table table-striped" >
+            <thead>
+              <tr>
+                <th style="width: 10%">
+                  Sr. No.
+                </th>
+                <th style="width: 30%">
+                  name
+                </th>
+                <th style="width: 30%">
+                  Loopback
+                </th>
+                <th style="width: 20%">
+                  Action
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let interface of interfaces; let i=index">
+                <td>{{i+1}}</td>
+                <td>{{interface.name}}</td>
+                <td>{{interface.ip}}</td>
+                <td><span class="glyphicon glyphicon-pencil" (click)="openInterfaceEditForm(i)"></span>&nbsp;&nbsp;<span
+                    (click)="deleteInterface(i)" class="glyphicon glyphicon-trash"></span></td>
+              </tr>
+              <tr *ngIf="interfaces.length == 0">
+                <td colspan="3">Record not found</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
